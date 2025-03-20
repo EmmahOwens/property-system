@@ -1,32 +1,29 @@
 
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthForm from "@/components/AuthForm";
 import { NeumorphCard } from "@/components/NeumorphCard";
 import { NeumorphButton } from "@/components/NeumorphButton";
-import { toast } from "@/components/ui/sonner";
 import { User, Building } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 type UserType = "tenant" | "landlord" | null;
 
 const Signup = () => {
   const navigate = useNavigate();
   const [userType, setUserType] = useState<UserType>(null);
+  const { signUp, isLoading } = useAuth();
   
-  const handleSignup = (data: any) => {
-    console.log("Signup data:", data);
+  const handleSignup = async (data: any) => {
+    if (!userType) return;
     
-    // In a real application, this would create an account with Auth0
-    toast.success("Account created successfully!", {
-      description: "Please check your email to verify your account.",
+    await signUp({
+      ...data,
+      userType,
     });
-    
-    // Simulate redirect after signup
-    setTimeout(() => {
-      navigate("/login");
-    }, 1500);
   };
   
   if (!userType) {
@@ -119,7 +116,8 @@ const Signup = () => {
             
             <AuthForm 
               type={userType === "tenant" ? "tenant-signup" : "landlord-signup"} 
-              onSubmit={handleSignup} 
+              onSubmit={handleSignup}
+              isLoading={isLoading} 
             />
             
             <div className="mt-6 text-center">

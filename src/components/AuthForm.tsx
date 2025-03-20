@@ -10,9 +10,10 @@ type AuthFormType = "login" | "tenant-signup" | "landlord-signup";
 interface AuthFormProps {
   type: AuthFormType;
   onSubmit: (data: any) => void;
+  isLoading?: boolean;
 }
 
-const AuthForm = ({ type, onSubmit }: AuthFormProps) => {
+const AuthForm = ({ type, onSubmit, isLoading = false }: AuthFormProps) => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -25,7 +26,6 @@ const AuthForm = ({ type, onSubmit }: AuthFormProps) => {
   
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false);
   
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -78,17 +78,7 @@ const AuthForm = ({ type, onSubmit }: AuthFormProps) => {
       return;
     }
     
-    setLoading(true);
-    
-    try {
-      // In a real app, this would be an API call
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      onSubmit(formData);
-    } catch (error) {
-      console.error("Authentication error:", error);
-    } finally {
-      setLoading(false);
-    }
+    onSubmit(formData);
   };
   
   const formTitle = 
@@ -198,9 +188,9 @@ const AuthForm = ({ type, onSubmit }: AuthFormProps) => {
             type="submit"
             variant="primary"
             className="w-full"
-            disabled={loading}
+            disabled={isLoading}
           >
-            {loading ? (
+            {isLoading ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 <span>Processing...</span>

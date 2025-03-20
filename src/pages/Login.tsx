@@ -1,25 +1,17 @@
 
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import AuthForm from "@/components/AuthForm";
-import { toast } from "@/components/ui/sonner";
+import { useAuth } from "@/hooks/useAuth";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { signIn, isLoading } = useAuth();
   
-  const handleLogin = (data: any) => {
-    console.log("Login data:", data);
-    
-    // In a real application, this would verify credentials with Auth0
-    toast.success("Login successful!", {
-      description: "Redirecting to your dashboard...",
-    });
-    
-    // Simulate redirect after login
-    setTimeout(() => {
-      navigate("/tenant-dashboard");
-    }, 1500);
+  const handleLogin = async (data: any) => {
+    await signIn(data);
   };
   
   return (
@@ -30,7 +22,7 @@ const Login = () => {
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
             <h1 className="text-3xl font-bold text-center mb-8">Log In to Your Account</h1>
-            <AuthForm type="login" onSubmit={handleLogin} />
+            <AuthForm type="login" onSubmit={handleLogin} isLoading={isLoading} />
             
             <div className="mt-6 text-center">
               <p className="text-muted-foreground">
