@@ -11,6 +11,7 @@ import TenantDashboard from "./pages/TenantDashboard";
 import LandlordDashboard from "./pages/LandlordDashboard";
 import NotFound from "./pages/NotFound";
 import { AuthProvider } from "./hooks/useAuth";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 const queryClient = new QueryClient();
 
@@ -25,8 +26,17 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/tenant-dashboard" element={<TenantDashboard />} />
-            <Route path="/landlord-dashboard" element={<LandlordDashboard />} />
+            
+            {/* Protected tenant routes */}
+            <Route element={<ProtectedRoute userType="tenant" />}>
+              <Route path="/tenant-dashboard" element={<TenantDashboard />} />
+            </Route>
+            
+            {/* Protected landlord routes */}
+            <Route element={<ProtectedRoute userType="landlord" />}>
+              <Route path="/landlord-dashboard" element={<LandlordDashboard />} />
+            </Route>
+            
             <Route path="*" element={<NotFound />} />
           </Routes>
         </AuthProvider>
